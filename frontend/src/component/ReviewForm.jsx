@@ -2,7 +2,10 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import StarRating from "./StarRating";
+import { useNavigate } from "react-router-dom";
+
 export default function ReviewForm({id, currentUser}) {
+  const navigate = useNavigate();
   const [review, setReview] = useState({
     rating: 0,
     comment: "",
@@ -17,26 +20,31 @@ export default function ReviewForm({id, currentUser}) {
 
   const handleSumbitReview = async (e) => {
     e.preventDefault();
+    if(!currentUser){
+      toast.error("Please logged into for rating...");
+      navigate("/login");
+      return;
+    }
     try {
-      await axios.post(`htttp://localhost:8080/listings/${id}/reviews`, review, {
+      await axios.post(`http://localhost:8080/listings/${id}/reviews`, {review}, {
         withCredentials : true
       });
       toast.success("Review submitted successfully...");
       setReview({rating: 0, comment: ""});
     } catch (err) {
         toast.error(err.message);
+        console.log(err.message);
     }
   };
   return (
     <>
       <h4>Leave a Review</h4>
-      {currentUser && (
         <form
           noValidate
           className="needs-validation"
-          onChange={handleReviewInputChange}
+          onSubmit={handleSumbitReview}
         >
-          <div className="mt-3 mb-3">
+          {/* <div className="mt-3 mb-3">
             <label htmlFor="rating" className="form-label">
               Rating
             </label>
@@ -49,7 +57,7 @@ export default function ReviewForm({id, currentUser}) {
               className="form-range"
               onChange={handleSumbitReview}
             />
-          </div>
+          </div> */}
 
           <div className="mt-3 mb-3">
             <label htmlFor="rating" className="form-label">
@@ -73,6 +81,7 @@ export default function ReviewForm({id, currentUser}) {
               name="comment"
               className="form-control"
               onChange={handleReviewInputChange}
+              value={review.comment}
               required
             ></textarea>
             <div className="valid-feedback">Comment looks good.</div>
@@ -82,7 +91,6 @@ export default function ReviewForm({id, currentUser}) {
           </div>
           <button className="btn btn-outline-dark">Submit</button>
         </form>
-      )}
     </>
   );
 }
