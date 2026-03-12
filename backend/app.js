@@ -66,12 +66,6 @@ passport.deserializeUser(User.deserializeUser());
 app.get("/current-user", (req, res) => {
   res.json(req.user || null);
 });
-
-
-// app.use((req, res, next) => {
-//     res.locals.currentUser = req.user;
-//     next();
-// })
  
 app.use("/listings", listingsRouters);
 app.use("/listings/:id/reviews", reviewsRouters);
