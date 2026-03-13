@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import UserContext from "../context/UserContext";
+import UserContext, { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Nav() {
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { currentUser, setCurrentUser } = useUser();
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {

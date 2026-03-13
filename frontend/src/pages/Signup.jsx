@@ -1,7 +1,7 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import UserContext from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 import { toast } from "react-toastify";
 
 export default function Signup() {
@@ -17,7 +17,7 @@ export default function Signup() {
   };
 
   const navigate = useNavigate();
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

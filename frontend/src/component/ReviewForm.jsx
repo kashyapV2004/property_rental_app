@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import StarRating from "./StarRating";
 import { useNavigate } from "react-router-dom";
 
-export default function ReviewForm({id, currentUser}) {
+export default function ReviewForm({ id, currentUser }) {
   const navigate = useNavigate();
   const [review, setReview] = useState({
     rating: 0,
@@ -20,77 +20,66 @@ export default function ReviewForm({id, currentUser}) {
 
   const handleSumbitReview = async (e) => {
     e.preventDefault();
-    if(!currentUser){
+    if (!currentUser) {
       toast.error("Please logged into for rating...");
       navigate("/login");
       return;
     }
     try {
-      await axios.post(`http://localhost:8080/listings/${id}/reviews`, {review}, {
-        withCredentials : true
-      });
+      await axios.post(
+        `http://localhost:8080/listings/${id}/reviews`,
+        { review },
+        {
+          withCredentials: true,
+        },
+      );
       toast.success("Review submitted successfully...");
-      setReview({rating: 0, comment: ""});
+      setReview({ rating: 0, comment: "" });
     } catch (err) {
-        toast.error(err.message);
-        console.log(err.message);
+      toast.error(err.message);
+      console.log(err.message);
     }
   };
   return (
     <>
       <h4>Leave a Review</h4>
-        <form
-          noValidate
-          className="needs-validation"
-          onSubmit={handleSumbitReview}
-        >
-          {/* <div className="mt-3 mb-3">
-            <label htmlFor="rating" className="form-label">
-              Rating
-            </label>
-            <input
-              type="range"
-              min="1"
-              max="5"
-              id="rating"
-              name="rating"
-              className="form-range"
-              onChange={handleSumbitReview}
-            />
-          </div> */}
+      <form
+        noValidate
+        className="needs-validation"
+        onSubmit={handleSumbitReview}
+      >
+        <div className="mt-3 mb-3">
+          <label htmlFor="rating" className="form-label">
+            Rating
+          </label>
+          <StarRating
+            rating={review.rating}
+            setRating={(value) => setReview({ ...review, rating: value })}
+          />
+        </div>
 
-          <div className="mt-3 mb-3">
-            <label htmlFor="rating" className="form-label">
-              Rating
-            </label>
-            <StarRating
-              rating={review.rating}
-              setRating={(value) => setReview({ ...review, rating: value })}
-            />
+        <div className="mb-3">
+          <label htmlFor="comment" className="form-label">
+            Comments
+          </label>
+          <textarea
+            type="range"
+            cols="30"
+            rows="5"
+            id="comment"
+            name="comment"
+            className="form-control"
+            onChange={handleReviewInputChange}
+            value={review.comment}
+            required
+          ></textarea>
+          <div className="valid-feedback">Comment looks good.</div>
+          <div className="invalid-feedback">
+            Please add some comments for review!
           </div>
-
-          <div className="mb-3">
-            <label htmlFor="comment" className="form-label">
-              Comments
-            </label>
-            <textarea
-              type="range"
-              cols="30"
-              rows="5"
-              id="comment"
-              name="comment"
-              className="form-control"
-              onChange={handleReviewInputChange}
-              value={review.comment}
-              required
-            ></textarea>
-            <div className="valid-feedback">Comment looks good.</div>
-            <div className="invalid-feedback">
-              Please add some comments for review!
-            </div>
-          </div>
-          <button className="btn btn-outline-dark">Submit</button>
-        </form>
+        </div>
+        <button className="btn btn-outline-dark">Submit</button>
+      </form>
     </>
   );
 }

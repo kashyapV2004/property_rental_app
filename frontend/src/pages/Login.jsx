@@ -1,13 +1,13 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import UserContext from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser } = useUser();
 
   const [formData, setFormData] = useState({
     username: "",

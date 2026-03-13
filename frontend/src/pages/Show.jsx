@@ -1,16 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { useContext } from "react";
-import UserContext from "../context/UserContext";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import { toast } from "react-toastify";
 import Review from "../component/Review";
 import ReviewForm from "../component/ReviewForm";
 
 export default function Show() {
   const navigate = useNavigate();
-  const { currentUser } = useContext(UserContext);
+  const { currentUser } = useUser();
   const [listings, setListings] = useState(null);
   const { id } = useParams();
 
