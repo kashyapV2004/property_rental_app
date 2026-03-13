@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import StarRating from "./StarRating";
 import { useNavigate } from "react-router-dom";
 
 export default function ReviewForm({ id, currentUser }) {
+  // const [reviewsUpdated, setReviewsUpdated] = useState(false);
   const navigate = useNavigate();
   const [review, setReview] = useState({
     rating: 0,

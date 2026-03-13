@@ -5,29 +5,27 @@ const Review = require("./models/review.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
     if(!req.isAuthenticated()){
-        // req.session.redirectUrl = req.originalUrl;
         return res.status(401).json({ message: "Not logged in" });
-    }
-    //res.status(200).json({ message: "Authenticated" });
-    next();
-}
-
-module.exports.saveRedirectUrl = (req, res, next) => {
-    if(req.session.redirectUrl){
-        res.locals.redirectUrl = req.session.redirectUrl;
     }
     next();
 }
 
 module.exports.isOwner = async (req, res, next) => {
-    let {id} = req.params;
-    let listing = await Listing.findById(id);
-    if(res.locals.currentUser && !listing.owner._id.equals(res.locals.currentUser._id)){
-        req.flash("error", "You don't have permission to do that!");
-        return res.redirect(`/listings/${id}`);
-    }
-    next();
-}
+  const { id } = req.params;
+  // Check if user is logged in
+  if (!res.locals.currentUser) {
+    return res.status(401).json({ message: "You must be logged in" });
+  }
+  const listing = await Listing.findById(id);
+  if (!listing) {
+    return res.status(404).json({ message: "Listing not found" });
+  }
+  // Check ownership
+  if (!listing.owner._id.equals(res.locals.currentUser._id)) {
+    return res.status(403).json({ message: "Unauthorized..." });
+  }
+  next();
+};
 
 module.exports.validateListing = (req, res, next)=>{
     let {error} = listingSchema.validate(req.body);
@@ -50,11 +48,19 @@ module.exports.validateReview = (req, res, next)=>{
 }
 
 module.exports.isReviewAuthor = async (req, res, next) => {
-    let {id, reviewId} = req.params;
-    let review = await Review.findById(reviewId);
-    if(res.locals.currentUser && !review.author.equals(res.locals.currentUser._id)){
-        req.flash("error", "You don't have permission to do that!");
-        return res.redirect(`/listings/${id}`);
-    }
-    next();
-}
+  let { reviewId } = req.params;
+  // check login
+  if (!res.locals.currentUser) {
+    return res.status(401).json({ message: "You must be logged in" });
+  }
+  // find review
+  let review = await Review.findById(reviewId);
+  if (!review) {
+    return res.status(404).json({ message: "Review not found" });
+  }
+  // check author
+  if (!review.author.equals(res.locals.currentUser._id)) {
+    return res.status(403).json({ message: "Unauthorized..." });
+  }
+  next();
+};

@@ -1,24 +1,35 @@
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function Review({listings, id, setListings}) {
+export default function Review({listings, id, setListings, currentUser}) {
+  const navigate = useNavigate();
 
-  const handleDeleteReview = async (reviewid) => {
-    try {
-      await axios.delete(
-        `http://localhost:8080/listings/${id}/reviews/${reviewid}`,
-        {
-          withCredentials: true,
-        },
-      );
-      setListings((prev) => ({
-        ...prev,
-        reviews: prev.reviews.filter((r) => r._id !== reviewid),
-      }));
-      toast.success("Review has been deleted successfully..");
-    } catch (err) {
-      toast.error(err.message);
+  const handleDeleteReview = async (reviewid, authorid) => {
+    if (!currentUser) {
+      toast.error("You must be loggedIn first...");
+      navigate("/login");
+      return;
     }
+    if (authorid !== currentUser._id){
+      toast.error("You are not authorized...");
+      return;
+    }
+      try {
+        await axios.delete(
+          `http://localhost:8080/listings/${id}/reviews/${reviewid}`,
+          {
+            withCredentials: true,
+          },
+        );
+        setListings((prev) => ({
+          ...prev,
+          reviews: prev.reviews.filter((r) => r._id !== reviewid),
+        }));
+        toast.success("Review has been deleted successfully..");
+      } catch (err) {
+        toast.error(err.message);
+      }
   };
   return (
     <>
@@ -39,7 +50,7 @@ export default function Review({listings, id, setListings}) {
             </div>
             <div className="mb-3">
               <button
-                onClick={() => handleDeleteReview(review?._id)}
+                onClick={() => handleDeleteReview(review?._id, review.author._id)}
                 className="btn btn-sm btn-dark"
               >
                 Delete

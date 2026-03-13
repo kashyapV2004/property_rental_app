@@ -25,17 +25,21 @@ export default function Show() {
   }, [id]);
 
   const handleDelete = async () => {
-    try {
-      await axios.delete(`http://localhost:8080/listings/${id}`, {
-        withCredentials: true,
-      });
-      navigate("/listings");
-      toast.success("Deleted successfully...");
-    } catch (err) {
-      if (err.response && err.response.status === 401) {
-        navigate("/login", { state: { from: location.pathname } });
-      }
+    if (currentUser && listings?.owner?._id !== currentUser._id){
+      toast.error("You are not authorized...");
+      return;
     }
+      try {
+        await axios.delete(`http://localhost:8080/listings/${id}`, {
+          withCredentials: true,
+        });
+        navigate("/listings");
+        toast.success("Deleted successfully...");
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          navigate("/login", { state: { from: location.pathname } });
+        }
+      }
     console.log("Delete Successfully");
   };
 
@@ -89,7 +93,7 @@ export default function Show() {
         <div className="col-8 offset-2 mb-3">
           <ReviewForm id={id} currentUser={currentUser} />
           <hr />
-          <Review id={id} listings={listings} setListings={setListings}/>
+          <Review id={id} currentUser={currentUser} listings={listings} setListings={setListings}/>
         </div>
       </div>
     </>
