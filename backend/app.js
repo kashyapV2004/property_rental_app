@@ -1,11 +1,12 @@
+const isProduction = process.env.NODE_ENV === "production";
+
 if(process.env.NODE_ENV != "production"){
     require("dotenv").config();
 }
-
+const PORT = process.env.PORT || 8080
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const path = require("path");
 const methodOverride = require("method-override");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
@@ -19,6 +20,8 @@ const listingsRouters = require("./routes/listing.js");
 const reviewsRouters = require("./routes/review.js");
 const userRouters = require("./routes/user.js");
 
+app.set("trust proxy", 1);
+
 // Enable CORS for all routes
 app.use(
   cors({
@@ -27,7 +30,7 @@ app.use(
   }),
 );
 
-const mongo_url = 'mongodb://127.0.0.1:27017/wanderlust';
+const mongo_url = process.env.MONGODB_URL;
 main()
     .then(() => {
         console.log("connected to mongo successfully..");
@@ -45,13 +48,15 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 
 const sessionOptions = {
-    secret : "mysupersecretcode",
+    secret : process.env.SECRET,
     resave : false,
-    saveUninitialized : true,
+    saveUninitialized : false,
     cookie : {
-        expires : Date.now() + 7 * 24 * 60 * 60 * 1000,
+        expires : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         maxAge : 7 * 24 * 60 * 60 * 1000,
-        httpOnly : true
+        httpOnly : true,
+        secure : isProduction,
+        sameSite : isProduction ? "none" : "lax"
     }
 };
 
@@ -83,12 +88,12 @@ app.use((req, res, next) => {
 //middleware
 app.use((err, req, res, next) => {
   if (res.headersSent) {
-    return next(err); // don't send headers twice
+    return next(err);
   }
   let { statusCode = 500, message = "something went wrong!" } = err;
   res.status(statusCode).json({ success: false, message });
 });
 
-app.listen(8080, () => {
+app.listen(PORT, () => {
     console.log("server is lestening to port 8080..");
 });
