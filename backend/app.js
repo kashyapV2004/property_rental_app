@@ -1,4 +1,7 @@
 const isProduction = process.env.NODE_ENV === "production";
+const frontendURL = isProduction
+  ? "https://property-rental-app-eta.vercel.app"
+  : "http://localhost:5173";
 
 if(process.env.NODE_ENV != "production"){
     require("dotenv").config();
@@ -13,7 +16,6 @@ const session = require("express-session");
 const passport = require("passport")
 const localSrategy = require("passport-local");
 const User = require("./models/user.js");
-
 const cors=require("cors");
 
 const listingsRouters = require("./routes/listing.js");
@@ -22,10 +24,6 @@ const userRouters = require("./routes/user.js");
 
 app.set("trust proxy", 1);
 
-const frontendURL = isProduction
-  ? "https://property-rental-app-eta.vercel.app/"
-  : "http://localhost:5173";
-// Enable CORS for all routes
 app.use(
   cors({
     origin: frontendURL,
