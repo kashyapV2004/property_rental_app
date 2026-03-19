@@ -1,8 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { toast } from "react-toastify";
+import API from "../api";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -22,16 +22,9 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/signup", formData, {
-        withCredentials: true,
-      });
+      const res = await API.post("/signup", formData);
       if (res.data.success) {
-        const currentUser = await axios.get(
-          "http://localhost:8080/current-user",
-          {
-            withCredentials: true,
-          },
-        );
+        const currentUser = await API.get("/current-user");
         setCurrentUser(currentUser.data);
         navigate("/listings");
         toast.success("You have successfully registered...");

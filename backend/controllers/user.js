@@ -1,9 +1,18 @@
 const User = require("../models/user");
 
 //user signup controller
-module.exports.userSignupPost = async (req, res) => {
+module.exports.userSignupPost = async (req, res, next) => {
   try {
     let { username, email, password } = req.body;
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already exists. Please choose another.",
+      });
+    }
+    
     const newUser = new User({ username, email });
     const registeredUser = await User.register(newUser, password);
 
@@ -36,9 +45,9 @@ module.exports.userLoginPost = (req, res) => {
 module.exports.userLogout = (req, res, next) => {
   req.logout(function (err) {
     if (err) return next(err);
-      return res.json({
-        success: true,
-        message: "Logged out successfully",
-      });
+    return res.json({
+      success: true,
+      message: "Logged out successfully",
+    });
   });
 };
