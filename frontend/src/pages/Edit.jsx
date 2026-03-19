@@ -1,4 +1,4 @@
-import axios from "axios";
+import API from "../api";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -28,10 +28,8 @@ export default function Edit() {
   };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/listings/${id}/edit`, {
-        withCredentials: true,
-      })
+    API
+      .get(`/listings/${id}/edit`)
       .then((res) => {
         setListing(res.data.listing);
         setOriginalImageUrl(res.data.originalImageUrl);
@@ -55,8 +53,7 @@ export default function Edit() {
         formData.append("image", listing.image);
       }
 
-      await axios.put(`http://localhost:8080/listings/${id}`, formData, {
-        withCredentials: true,
+      await API.put(`/listings/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

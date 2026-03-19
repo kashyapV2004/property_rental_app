@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { toast } from "react-toastify";
@@ -42,9 +42,7 @@ export default function Login() {
     e.preventDefault();
     if (!validateForm()) return;
     try {
-      const res = await axios.post("http://localhost:8080/login", formData, {
-        withCredentials: true,
-      });
+      const res = await API.post("/login", formData);
       if (res.data.success) {
         setCurrentUser(res.data.user);
         toast.success(res.data.message);

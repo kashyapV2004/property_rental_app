@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -11,9 +11,7 @@ export default function AddListing() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await axios.get("http://localhost:8080/listings/new", {
-          withCredentials: true,
-        });
+        await API.get("/listings/new");
       } catch (err) {
         if (err.response && err.response.status === 401) {
           navigate("/login", { state: { from: location.pathname } });
@@ -87,8 +85,7 @@ export default function AddListing() {
       data.append("listing[country]", formData.country);
       if (formData.image) data.append("image", formData.image);
 
-      await axios.post("http://localhost:8080/listings", data, {
-        withCredentials: true,
+      await API.post("/listings", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

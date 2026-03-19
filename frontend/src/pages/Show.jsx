@@ -1,4 +1,4 @@
-import axios from "axios";
+import API from "../api";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../context/UserContext";
@@ -13,8 +13,8 @@ export default function Show() {
   const { id } = useParams();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/listings/${id}`)
+    API
+      .get(`/listings/${id}`)
       .then((res) => {
         setListings(res.data);
       })
@@ -25,24 +25,21 @@ export default function Show() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (currentUser && listings?.owner?._id !== currentUser._id){
+    if (currentUser && listings?.owner?._id !== currentUser._id) {
       toast.error("You are not authorized...");
       return;
     }
-      try {
-        await axios.delete(`http://localhost:8080/listings/${id}`, {
-          withCredentials: true,
-        });
-        navigate("/listings");
-        toast.success("Deleted successfully...");
-      } catch (err) {
-        if (err.response && err.response.status === 401) {
-          navigate("/login", { state: { from: location.pathname } });
-        }
+    try {
+      await API.delete(`/listings/${id}`);
+      navigate("/listings");
+      toast.success("Deleted successfully...");
+    } catch (err) {
+      if (err.response && err.response.status === 401) {
+        navigate("/login", { state: { from: location.pathname } });
       }
+    }
     console.log("Delete Successfully");
   };
-
 
   return (
     <>
@@ -93,7 +90,12 @@ export default function Show() {
         <div className="col-8 offset-2 mb-3">
           <ReviewForm id={id} currentUser={currentUser} />
           <hr />
-          <Review id={id} currentUser={currentUser} listings={listings} setListings={setListings}/>
+          <Review
+            id={id}
+            currentUser={currentUser}
+            listings={listings}
+            setListings={setListings}
+          />
         </div>
       </div>
     </>

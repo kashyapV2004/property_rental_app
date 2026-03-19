@@ -1,4 +1,4 @@
-import axios from "axios";
+import API from "../api";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Filter from "../component/Filters";
@@ -8,8 +8,8 @@ export default function Listings() {
   const [allListings, setAllListings] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/listings") // adjust your API route
+    API
+      .get("/listings")
       .then((res) => {
         setAllListings(res.data);
       })

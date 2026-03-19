@@ -17,5 +17,3 @@ export default function UserContextProvider({ children }) {
 export function useUser(){
     return useContext(UserContext);
 }
-
-// export default UserContext;
