@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import axios from "axios";
+import API from "../api";
 import { useNavigate } from "react-router-dom";
 
 export default function Review({listings, id, setListings, currentUser}) {
@@ -16,12 +16,7 @@ export default function Review({listings, id, setListings, currentUser}) {
       return;
     }
       try {
-        await axios.delete(
-          `http://localhost:8080/listings/${id}/reviews/${reviewid}`,
-          {
-            withCredentials: true,
-          },
-        );
+        await API.delete(`/listings/${id}/reviews/${reviewid}`);
         setListings((prev) => ({
           ...prev,
           reviews: prev.reviews.filter((r) => r._id !== reviewid),

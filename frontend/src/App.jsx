@@ -10,19 +10,17 @@ import Listings from "./pages/Listings.jsx";
 import Show from "./pages/Show.jsx";
 import Edit from "./pages/Edit.jsx";
 import {useEffect } from "react";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useUser } from "./context/UserContext.jsx";
+import API from "./api.js";
 
 function App() {
   const { setCurrentUser } = useUser();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/current-user", {
-        withCredentials: true,
-      })
+    API
+      .get("/current-user")
       .then((res) => {
         setCurrentUser(res.data);
       })

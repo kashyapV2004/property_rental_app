@@ -1,19 +1,14 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import UserContext, { useUser } from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../api";
 
 export default function Nav() {
   const { currentUser, setCurrentUser } = useUser();
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      await axios.get(
-        "http://localhost:8080/logout",{
-          withCredentials: true,
-        },
-      );
+      await API.get("/logout");
       setCurrentUser(null);
       navigate("/listings");
     } catch (err) {

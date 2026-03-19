@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import API from "../api";
 import { toast } from "react-toastify";
 import StarRating from "./StarRating";
 import { useNavigate } from "react-router-dom";
@@ -27,12 +27,9 @@ export default function ReviewForm({ id, currentUser }) {
       return;
     }
     try {
-      await axios.post(
-        `http://localhost:8080/listings/${id}/reviews`,
-        { review },
-        {
-          withCredentials: true,
-        },
+      await API.post(
+        `/listings/${id}/reviews`,
+        { review }
       );
       toast.success("Review submitted successfully...");
       setReview({ rating: 0, comment: "" });
