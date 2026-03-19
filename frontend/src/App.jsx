@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Nav from "./component/Nav.jsx";
-import Footer from "./component/footer.jsx";
+import Footer from "./component/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import AddListing from "./pages/AddListing.jsx";
 import Login from "./pages/Login.jsx";
