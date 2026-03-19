@@ -22,10 +22,13 @@ const userRouters = require("./routes/user.js");
 
 app.set("trust proxy", 1);
 
+const frontendURL = isProduction
+  ? "https://property-rental-app-eta.vercel.app/"
+  : "http://localhost:5173";
 // Enable CORS for all routes
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: frontendURL,
     credentials: true,
   }),
 );
