@@ -26,7 +26,7 @@ app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: frontendURL,
+    origin: "https://property-rental-app-eta.vercel.app",
     credentials: true,
   }),
 );
