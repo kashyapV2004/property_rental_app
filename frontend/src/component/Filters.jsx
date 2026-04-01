@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 export default function Filter() {
+
     return (
       <div id="filters">
         <div className="filter">

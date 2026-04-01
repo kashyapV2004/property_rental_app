@@ -2,10 +2,18 @@ import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
+import { useState } from "react";
 
 export default function Nav() {
   const { currentUser, setCurrentUser } = useUser();
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/listings?search=${search}`);
+  };
+
   const handleLogout = async () => {
     try {
       await API.get("/logout");
@@ -39,18 +47,15 @@ export default function Nav() {
             </div>
 
             <div className="navbar-nav mx-auto">
-              <form
-                className="d-flex"
-                role="search"
-                action="/listings"
-                method="GET"
-              >
+              <form className="d-flex" role="search" onSubmit={handleSearch}>
                 <input
                   className="form-control me-2"
                   type="search"
                   name="search"
                   placeholder="Search Destination"
                   aria-label="Search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
                 <button className="btn btn-outline-danger" type="submit">
                   Search

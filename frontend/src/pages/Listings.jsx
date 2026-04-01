@@ -1,26 +1,30 @@
 import API from "../api";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Filter from "../component/Filters";
 import { toast } from "react-toastify";
 
 export default function Listings() {
   const [allListings, setAllListings] = useState([]);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const search = queryParams.get("search");
 
   useEffect(() => {
-    API
-      .get("/listings")
-      .then((res) => {
+    const fetchListing = async () => {
+      try {
+        const res = await API.get(`/listings?search=${search || ""}`);
         setAllListings(res.data);
-      })
-      .catch((err) => {
+      } catch (err) {
         toast.error(err);
-      });
-  }, []);
+      }
+    };
+    fetchListing();
+  }, [search]);
 
   return (
     <>
-      <Filter />
+      <Filter allList={allListings} />
       <div className="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
         {allListings.map((list) => (
           <Link

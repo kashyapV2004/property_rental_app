@@ -2,8 +2,25 @@ const Listing = require("../models/listing.js");
 
 //all listings
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
+  try {
+  const {search} = req.query || "";
+  let query = {};
+
+  if(search){
+    query = {
+      $or:[
+        {title : {$regex : search, $options : "i"}},
+        {location : {$regex : search, $options : "i"}},
+        {country : {$regex : search, $options : "i"}}
+      ],
+    };
+  }
+
+  const allListings = await Listing.find(query);
   res.json(allListings);
+}catch(err){
+  res.status(500).json({message : "Internal Server Error"});
+}
 };
 
 //crete new listing from
